@@ -9,24 +9,23 @@ export default async function handler(req, res) {
     const { prompt } = req.body;
     if (!prompt) return res.status(400).json({ error: "PROMPT_REQUIRED" });
 
-    const identity = "Tulis longtext sangat romantis, lowercase semua, huruf belakang double (contoh: kamuu, sekolahh), mix English-Indo gaul Jaksel, bikin salting brutal, jangan kaku.";
+    // KERNEL_RULES: Instruksi gaya ketikan Kelvin
+    const systemInstruction = "Tulis longtext romantis, lowercase semua, huruf belakang double (contoh: kamuu, sekolahh), mix English-Indo gaul Jaksel, bikin salting brutal, jangan kaku.";
 
-    const apis = [
-        `https://api.vreden.web.id/api/ai/gpt4?text=${encodeURIComponent(identity + " PERINTAH: " + prompt)}`,
-        `https://api.paxsenix.biz.id/ai/gpt4o?text=${encodeURIComponent(identity + " PERINTAH: " + prompt)}`,
-        `https://api.paxsenix.biz.id/ai/gemini?text=${encodeURIComponent(identity + " PERINTAH: " + prompt)}`
-    ];
+    try {
+        // Menggunakan Neural Bridge yang paling stabil saat ini
+        const response = await fetch(`https://api.vreden.web.id/api/ai/gemini?text=${encodeURIComponent(systemInstruction + " PERINTAH: " + prompt)}`);
+        const data = await response.json();
 
-    for (const api of apis) {
-        try {
-            const response = await fetch(api);
-            const data = await response.json();
-            const result = data.result || data.message;
-            if (result) return res.status(200).json({ result });
-        } catch (e) {
-            continue; // Coba API berikutnya jika gagal
+        // Validasi hasil dari server AI
+        const finalResult = data.result || data.message;
+
+        if (finalResult) {
+            return res.status(200).json({ result: finalResult });
+        } else {
+            throw new Error("RETRY_BACKUP");
         }
+    } catch (error) {
+        return res.status(500).json({ error: "CORE_SYSTEM_OVERLOAD: Silakan coba lagi dalam 3 detik." });
     }
-
-    return res.status(500).json({ error: "ALL_NEURAL_BRIDGES_SATURED" });
 }
