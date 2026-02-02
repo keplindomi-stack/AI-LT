@@ -2,66 +2,127 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>AI_GANTENG_GENERATOR</title>
+    <title>AI_GANTENG_GENERATOR_V2</title>
     <style>
-        body { background: #050505; color: #00f2ff; font-family: 'Courier New', monospace; }
-        .neon-border { border: 1px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; }
-        .loading { animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        body { 
+            background: #050505; 
+            color: #00f2ff; 
+            font-family: 'Courier New', monospace; 
+            overflow-x: hidden;
+        }
+        .grid-bg { 
+            background-image: linear-gradient(to right, #0a1a1a 1px, transparent 1px), 
+                              linear-gradient(to bottom, #0a1a1a 1px, transparent 1px); 
+            background-size: 40px 40px; 
+        }
+        .neon-border { 
+            border: 1px solid #00f2ff; 
+            box-shadow: 0 0 15px #00f2ff, inset 0 0 5px #00f2ff; 
+            background: rgba(0, 0, 0, 0.95);
+        }
+        .animate-scan {
+            width: 100%; height: 2px; background: #00f2ff;
+            position: absolute; animation: scan 4s infinite linear;
+            box-shadow: 0 0 10px #00f2ff; z-index: 10;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        textarea { scrollbar-width: thin; scrollbar-color: #00f2ff #000; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-lg p-8 neon-border bg-black">
-        <h2 class="text-center text-lg font-bold tracking-widest mb-6 underline">AI_LONGTEXT_COMMANDER</h2>
+<body class="grid-bg min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-xl p-8 neon-border relative overflow-hidden">
+        <div class="animate-scan"></div>
         
-        <p class="text-[10px] text-cyan-700 mb-2">INPUT_PROMPT_HERE_ARCHITECT:</p>
-        <input type="text" id="userPrompt" placeholder="Contoh: buatin longtext good morning sekolah..." 
-               class="w-full bg-black border border-cyan-900 p-4 mb-4 text-cyan-300 focus:outline-none">
+        <header class="mb-8 text-center">
+            <h1 class="text-2xl font-bold tracking-[0.3em] uppercase">AI_LONGTEXT_GEN</h1>
+            <p class="text-[10px] text-cyan-700 mt-2">STATUS: NEURAL_LINK_ACTIVE // ARCHITECT: KELVIN</p>
+        </header>
 
-        <button onclick="generateAI()" id="genBtn"
-                class="w-full bg-cyan-900/30 border border-cyan-400 py-3 font-bold hover:bg-cyan-400 hover:text-black">
-            GENERATE_NEURAL_CONTENT
-        </button>
+        <div class="space-y-6 relative z-20">
+            <div>
+                <label class="text-[10px] uppercase block mb-2 text-cyan-600">Enter_Prompt_Command</label>
+                <textarea id="userPrompt" rows="3" 
+                          class="w-full bg-black border border-cyan-900 p-4 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all text-sm"
+                          placeholder="Contoh: buatin longtext semangat sekolah buat cewe gua..."></textarea>
+            </div>
 
-        <div id="loader" class="hidden text-center mt-4 loading text-[10px]">THINKING_IN_GANTENG_MODE...</div>
+            <button onclick="generateAI()" id="genBtn"
+                    class="w-full bg-cyan-900/20 border border-cyan-400 py-4 font-bold tracking-widest hover:bg-cyan-400 hover:text-black transition-all">
+                EXECUTE_NEURAL_GENERATION
+            </button>
 
-        <div id="resultArea" class="hidden mt-6">
-            <textarea id="finalText" rows="8" readonly class="w-full bg-gray-900 border border-cyan-800 p-4 text-green-400 text-sm"></textarea>
-            <button onclick="copyToClipboard()" class="mt-2 text-[10px] underline">COPY_RESULT</button>
+            <div id="loader" class="hidden text-center space-y-2 py-4">
+                <div class="flex justify-center space-x-2">
+                    <div class="w-2 h-2 bg-cyan-400 animate-bounce"></div>
+                    <div class="w-2 h-2 bg-cyan-400 animate-bounce [animation-delay:-.3s]"></div>
+                    <div class="w-2 h-2 bg-cyan-400 animate-bounce [animation-delay:-.5s]"></div>
+                </div>
+                <p class="text-[10px] animate-pulse">PROCESSING_GANTENG_TYPING_STYLE...</p>
+            </div>
+
+            <div id="resultArea" class="hidden space-y-4 pt-4 border-t border-cyan-900">
+                <label class="text-[10px] uppercase block text-green-600">Generated_Output:</label>
+                <textarea id="finalText" rows="8" readonly 
+                          class="w-full bg-black/50 border border-green-900 p-4 text-green-400 text-sm focus:outline-none"></textarea>
+                
+                <button onclick="copyResult()" 
+                       class="w-full border border-cyan-500 text-cyan-500 py-2 text-[10px] hover:bg-cyan-500 hover:text-black transition-all font-bold uppercase">
+                       Copy_to_Clipboard
+                </button>
+            </div>
         </div>
+
+        <footer class="mt-8 text-[8px] text-center text-cyan-900 tracking-tighter uppercase">
+            &copy; 2026 THE_ARCHITECT_SYSTEMS // SECURED_CONNECTION
+        </footer>
     </div>
 
     <script>
         async function generateAI() {
-            const prompt = document.getElementById('userPrompt').value;
-            if(!prompt) return;
+            const promptInput = document.getElementById('userPrompt').value;
+            const resArea = document.getElementById('resultArea');
+            const loader = document.getElementById('loader');
+            const btn = document.getElementById('genBtn');
+            
+            if(!promptInput) return alert("COMMAND_REQUIRED: Masukkan instruksi!");
 
-            document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('resultArea').classList.add('hidden');
+            loader.classList.remove('hidden');
+            resArea.classList.add('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
 
             try {
-                const res = await fetch('/api/generate-longtext', {
+                const response = await fetch('/api/generate-longtext', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt })
+                    body: JSON.stringify({ prompt: promptInput })
                 });
-                const data = await res.json();
-                
-                document.getElementById('finalText').value = data.result;
-                document.getElementById('resultArea').classList.remove('hidden');
+
+                const data = await response.json();
+
+                if (data.result) {
+                    document.getElementById('finalText').value = data.result;
+                    resArea.classList.remove('hidden');
+                } else {
+                    alert("FATAL_ERROR: " + (data.error || "AI_ENGINE_OFFLINE"));
+                }
             } catch (e) {
-                alert("CRITICAL_ERROR: AI Engine Offline.");
+                alert("SISTEM_CRASH: Jalur /api/generate-longtext tidak ditemukan.");
             } finally {
-                document.getElementById('loader').classList.add('hidden');
+                loader.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
             }
         }
 
-        function copyToClipboard() {
+        function copyResult() {
             const text = document.getElementById('finalText');
             text.select();
             navigator.clipboard.writeText(text.value);
-            alert("DATA_COPIED");
+            alert("DATA_COPIED_TO_SYSTEM_CLIPBOARD");
         }
     </script>
 </body>
