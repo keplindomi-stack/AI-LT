@@ -4,85 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>AI_GANTENG_GENERATOR_STABLE</title>
+    <title>AI_GANTENG_GENERATOR_V2</title>
     <style>
-        body { 
-            background: #050505; 
-            color: #00f2ff; 
-            font-family: 'Courier New', monospace; 
-            overflow-x: hidden;
-        }
-        .grid-bg { 
-            background-image: linear-gradient(to right, #0a1a1a 1px, transparent 1px), 
-                              linear-gradient(to bottom, #0a1a1a 1px, transparent 1px); 
-            background-size: 40px 40px; 
-        }
-        .neon-border { 
-            border: 1px solid #00f2ff; 
-            box-shadow: 0 0 15px #00f2ff, inset 0 0 5px #00f2ff; 
-            background: rgba(0, 0, 0, 0.95);
-        }
-        .animate-scan {
-            width: 100%; height: 2px; background: #00f2ff;
-            position: absolute; animation: scan 4s infinite linear;
-            box-shadow: 0 0 10px #00f2ff; z-index: 10;
-        }
+        body { background: #050505; color: #00f2ff; font-family: 'Courier New', monospace; }
+        .grid-bg { background-image: linear-gradient(to right, #0a1a1a 1px, transparent 1px), linear-gradient(to bottom, #0a1a1a 1px, transparent 1px); background-size: 40px 40px; }
+        .neon-border { border: 1px solid #00f2ff; box-shadow: 0 0 15px #00f2ff, inset 0 0 5px #00f2ff; background: rgba(0, 0, 0, 0.95); }
+        .animate-scan { width: 100%; height: 2px; background: #00f2ff; position: absolute; animation: scan 4s infinite linear; box-shadow: 0 0 10px #00f2ff; z-index: 10; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        textarea { scrollbar-width: thin; scrollbar-color: #00f2ff #000; }
-        .loading-text { animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body class="grid-bg min-h-screen flex items-center justify-center p-4">
-
     <div class="w-full max-w-xl p-8 neon-border relative overflow-hidden">
         <div class="animate-scan"></div>
-        
         <header class="mb-8 text-center">
-            <h1 class="text-2xl font-bold tracking-[0.3em] uppercase">AI_LONGTEXT_GEN_V2</h1>
-            <p class="text-[10px] text-cyan-700 mt-2 uppercase">Status: System_Ready // Identity: Kelvin_Architect</p>
+            <h1 class="text-2xl font-bold tracking-[0.3em]">AI_LONGTEXT_GEN</h1>
+            <p class="text-[10px] text-cyan-700 mt-2">ARCHITECT: KELVIN // STATUS: ACTIVE</p>
         </header>
 
         <div class="space-y-6 relative z-20">
-            <div>
-                <label class="text-[10px] uppercase block mb-2 text-cyan-600 tracking-widest">Input_Neural_Command</label>
-                <textarea id="userPrompt" rows="3" 
-                          class="w-full bg-black border border-cyan-900 p-4 text-cyan-300 focus:outline-none focus:border-cyan-400 transition-all text-sm"
-                          placeholder="Contoh: buatin longtext semangat sekolah buat cewe gua..."></textarea>
-            </div>
+            <textarea id="userPrompt" rows="3" class="w-full bg-black border border-cyan-900 p-4 text-cyan-300 focus:outline-none focus:border-cyan-400 text-sm" placeholder="Contoh: buatin longtext semangat sekolah buat cewe gua..."></textarea>
+            <button onclick="generateAI()" id="genBtn" class="w-full bg-cyan-900/20 border border-cyan-400 py-4 font-bold tracking-widest hover:bg-cyan-400 hover:text-black">EXECUTE_GENERATION</button>
 
-            <button onclick="generateAI()" id="genBtn"
-                    class="w-full bg-cyan-900/20 border border-cyan-400 py-4 font-bold tracking-widest hover:bg-cyan-400 hover:text-black transition-all">
-                EXECUTE_GENERATION
-            </button>
-
-            <div id="loader" class="hidden text-center space-y-2 py-4">
-                <div class="flex justify-center space-x-2">
-                    <div class="w-2 h-2 bg-cyan-400 animate-bounce"></div>
-                    <div class="w-2 h-2 bg-cyan-400 animate-bounce [animation-delay:-.3s]"></div>
-                    <div class="w-2 h-2 bg-cyan-400 animate-bounce [animation-delay:-.5s]"></div>
-                </div>
-                <p class="text-[10px] loading-text uppercase">Thinking_In_Ganteng_Mode...</p>
+            <div id="loader" class="hidden text-center py-4">
+                <p class="text-[10px] animate-pulse uppercase">Thinking_In_Ganteng_Mode...</p>
             </div>
 
             <div id="resultArea" class="hidden space-y-4 pt-4 border-t border-cyan-900">
-                <div class="flex justify-between items-center">
-                    <label class="text-[10px] uppercase text-green-600 tracking-tighter">Generated_Neural_Data:</label>
-                    <span class="text-[8px] text-cyan-800">ENCRYPTION: NONE</span>
-                </div>
-                <textarea id="finalText" rows="10" readonly 
-                          class="w-full bg-black/50 border border-green-900 p-4 text-green-400 text-sm focus:outline-none leading-relaxed"></textarea>
-                
-                <button onclick="copyResult()" 
-                       class="w-full border border-cyan-500 text-cyan-500 py-3 text-[10px] hover:bg-cyan-500 hover:text-black transition-all font-bold uppercase tracking-[0.2em]">
-                       Copy_To_Clipboard
-                </button>
+                <textarea id="finalText" rows="10" readonly class="w-full bg-black/50 border border-green-900 p-4 text-green-400 text-sm focus:outline-none leading-relaxed"></textarea>
+                <button onclick="copyResult()" class="w-full border border-cyan-500 text-cyan-500 py-3 text-[10px] hover:bg-cyan-500 hover:text-black font-bold uppercase">Copy_To_Clipboard</button>
             </div>
         </div>
-
-        <footer class="mt-8 text-[8px] text-center text-cyan-900 tracking-[0.3em] uppercase">
-            &copy; 2026 The_Architect_of_Code // Secured_by_Vercel
-        </footer>
     </div>
 
     <script>
@@ -91,46 +42,32 @@
             const resArea = document.getElementById('resultArea');
             const loader = document.getElementById('loader');
             const btn = document.getElementById('genBtn');
-            
-            if(!promptInput) return alert("SISTEM_ERROR: Masukkan perintah prompt terlebih dahulu.");
+            if(!promptInput) return alert("COMMAND_REQUIRED!");
 
-            // Reset UI
             loader.classList.remove('hidden');
             resArea.classList.add('hidden');
             btn.disabled = true;
-            btn.classList.add('opacity-50');
 
             try {
-                // Jalur API harus sesuai dengan nama file di folder api
                 const response = await fetch('/api/generate-longtext', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: promptInput })
                 });
-
                 const data = await response.json();
-
                 if (data.result) {
                     document.getElementById('finalText').value = data.result;
                     resArea.classList.remove('hidden');
-                } else {
-                    alert("AI_ENGINE_ERROR: " + (data.error || "Gagal menarik data. Coba lagi."));
-                }
-            } catch (e) {
-                alert("CRITICAL_CRASH: Jalur API '/api/generate-longtext' tidak merespons.");
-            } finally {
-                loader.classList.add('hidden');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50');
-            }
+                } else { alert("FATAL: " + (data.error || "RETRY")); }
+            } catch (e) { alert("CONNECTION_LOST: Sistem overload, coba lagi."); }
+            finally { loader.classList.add('hidden'); btn.disabled = false; }
         }
 
         function copyResult() {
             const text = document.getElementById('finalText');
-            if(!text.value) return;
             text.select();
             navigator.clipboard.writeText(text.value);
-            alert("SYSTEM: Data berhasil disalin ke clipboard.");
+            alert("SYSTEM: Data copied.");
         }
     </script>
 </body>
